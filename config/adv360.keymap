@@ -17,16 +17,6 @@
       };
       #endif
 
-      hm: homerow_mods {
-        compatible = "zmk,behavior-hold-tap";
-        label = "HOMEROW_MODS";
-        #binding-cells = <2>;
-        flavor = "tap-preferred";
-        tapping-term-ms = <200>;
-        quick_tap_ms = <175>;
-        bindings = <&kp>, <&kp>;
-      };
-
       ht_hp: hold_tap_hold_preferred {
         compatible = "zmk,behavior-hold-tap";
         #binding-cells = <2>;
@@ -34,26 +24,6 @@
         tapping-term-ms = <200>;
         quick-tap-ms = <175>;
         bindings = <&kp>, <&kp>;
-      };
-
-      lh_pht: left_positional_hold_tap {
-        compatible = "zmk,behavior-hold-tap";
-        #binding-cells = <2>;
-        flavor = "tap-unless-interrupted";
-        tapping-term-ms = <100>; // <---[[produces tap if held longer than tapping-term-ms]]
-        quick-tap-ms = <200>;
-        bindings = <&kp>, <&kp>;
-        hold-trigger-key-positions = <7 8 9 10 11 12 13 21 22 23 24 25 26 27 39 40 41 42 43 44 45 54 55 56 57 58 59 71 72 73 74 75>; // <---[[right-hand keys]]
-      };
-
-      rh_pht: right_positional_hold_tap {
-        compatible = "zmk,behavior-hold-tap";
-        #binding-cells = <2>;
-        flavor = "tap-unless-interrupted";
-        tapping-term-ms = <100>; // <---[[produces tap if held longer than tapping-term-ms]]
-        quick-tap-ms = <200>;
-        bindings = <&kp>, <&kp>;
-        hold-trigger-key-positions = <0 1 2 3 4 5 6 14 15 16 17 18 19 20 28 29 30 31 32 33 34 46 47 48 49 50 51 60 61 62 63 64>; // <---[[left-hand keys]]
       };
 
       skq: sticky_key_quick_release {
@@ -74,9 +44,9 @@
       bindings = <
         &kp EQUAL &kp N1    &kp N2   &kp N3   &kp N4     &kp N5 &tog 1                                                           &mo 3 &kp N6 &kp N7 &kp N8    &kp N9   &kp N0   &kp MINUS
         &kp TAB   &kp Q     &kp W    &kp E    &kp R      &kp T  &none                                                            &none &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
-        &kp ESC   &lh_pht LSHFT A     &lh_pht LCTRL S    &lh_pht LALT D    &lh_pht LGUI F      &kp G  &kp GRAVE           &kp LGUI  &kp LALT  &kp RALT  &kp RGUI       &none &kp H  &rh_pht RGUI J  &rh_pht RALT K     &rh_pht RCTRL L    &rh_pht RSHFT SEMI &kp SQT
+        &kp ESC   &kp A     &kp S    &kp D    &kp F      &kp G  &kp GRAVE           &skq LGUI  &skq LALT  &skq RALT  &skq RGUI       &none &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
         &skq LSHFT &kp Z     &kp X    &kp C    &kp V      &kp B                            &kp LG(V) &kp PG_UP                          &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &skq RSHFT
-        &sl 2     &kp GRAVE &trans   &kp LEFT &kp RIGHT         &kp BSPC  &ht_hp LCTRL DEL   &kp LG(C) &skq LC(LA(LS(LGUI))) &ht_hp RCTRL ENTER &kp SPACE       &kp UP &kp DOWN  &kp LBKT &kp RBKT &sl 2
+        &sl 2     &kp GRAVE &kp GRAVE   &kp LEFT &kp RIGHT         &kp BSPC  &ht_hp LCTRL DEL   &kp LG(C) &skq LC(LA(LS(LGUI))) &ht_hp RCTRL ENTER &kp SPACE       &kp UP &kp DOWN  &kp LBKT &kp RBKT &sl 2
       >;
     };
     keypad {
