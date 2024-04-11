@@ -30,9 +30,10 @@
         compatible = "zmk,behavior-sticky-key";
         #binding-cells = <1>;
         bindings = <&kp>;
-        release-after-ms = <1000>;
+        release-after-ms = <700>;
         quick-release;
         ignore-modifiers;
+        lazy;
       };
 
       td_sls: tap_dance_sticky_left_shift {
