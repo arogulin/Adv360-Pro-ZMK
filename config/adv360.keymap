@@ -33,7 +33,6 @@
         release-after-ms = <700>;
         quick-release;
         ignore-modifiers;
-        lazy;
       };
 
       td_sls: tap_dance_sticky_left_shift {
