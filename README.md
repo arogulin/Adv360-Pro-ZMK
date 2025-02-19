@@ -76,12 +76,12 @@ Follow the programming instruction on page 8 of the [Quick Start Guide](https://
 
 1. Extract the firmwares from the archive downloaded from the GitHub build job (If using the cloud builder) or the firmware folder (If building locally).
 1. Connect the left side keyboard to USB.
-1. Press Mod+macro1 to put the left side into bootloader mode; it should attach to your computer as a USB drive.
+1. Press Mod+macro1 (or DOUBLE-CLICK the Reset Button) to put the left side into bootloader mode; it should attach to your computer as a USB drive.
 1. Copy `left.uf2` to the USB drive and it will disconnect.
 1. Power off both keyboards (by unplugging them and making sure the switches are off).
 1. Turn on the left side keyboard with the switch.
 1. Connect the right side keyboard to USB to power it on.
-1. Press Mod+macro3 to put the right side into bootloader mode to attach it as a USB drive.
+1. Press Mod+macro3 (or DOUBLE-CLICK the Reset Button) to put the right side into bootloader mode to attach it as a USB drive.
 1. Copy `right.uf2` to the mounted drive.
 1. Unplug the right side keyboard and turn it back on.
 1. Enjoy!
@@ -144,6 +144,26 @@ In the event of a major update the beta branch may not be compatible with the cu
 By default this config repository references [a customised version of ZMK](https://github.com/ReFil/zmk/tree/adv360-z3.5) with Advantage 360 Pro specific functionality and changes over [base ZMK](https://github.com/zmkfirmware/zmk). The Kinesis fork is regularly updated to bring the latest updates and changes from base ZMK however will not always be completely up to date, some features such as new keycodes will not be immediately available on the 360 Pro after they are implemented in base ZMK.
 
 Whilst the Advantage 360 Pro is compatible with base ZMK (The pull request to merge it can be seen [here](https://github.com/zmkfirmware/zmk/pull/1454) if you want to see how to implement it) some of the more advanced features (the indicator RGB leds) will not work, and Kinesis cannot provide customer service for usage of base ZMK. Likewise the ZMK community cannot provide support for either the Kinesis keymap editor, nor any usage of the Kinesis custom fork.
+
+## Syncing with upstream
+1. Add upstream as a remote:
+   ```shell
+   git remote add upstream https://github.com/KinesisCorporation/Adv360-Pro-ZMK.git
+   ```
+2. Fetch upstream changes:
+   ```shell
+   git fetch upstream
+   ```
+3. Make sure you're on a branch you want to update. Rebase your fork on upstream:
+   ```shell
+   git rebase upstream/V3.0
+   ```
+4. If you have any merge conflicts, resolve them and then run `git rebase --continue` to
+   continue the rebase.
+5. Push your changes to your fork:
+   ```shell
+   git push -f origin
+   ```
 
 ## Other support
 
