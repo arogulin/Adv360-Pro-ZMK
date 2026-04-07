@@ -291,7 +291,7 @@ const BASE = [
   // Row 3: 14 keys (6 left + 2 thumb + 6 right)
   kpBinding('LSHFT'), kpBinding('Z'), kpBinding('X'), kpBinding('C'), kpBinding('V'), kpBinding('B'),
   resolveKpCode('LG(V)').label === '\u2318V' ? makeBinding('kp', '\u2318V') : kpBinding('LG(V)'),
-  kpBinding('PG_UP'),
+  makeBinding('kp', 'H+R'),
   kpBinding('N'), kpBinding('M'), kpBinding('COMMA'), kpBinding('DOT'), kpBinding('FSLH'), kpBinding('RSHFT'),
   // Row 4: 16 keys (5 left + 3 left-thumb + 3 right-thumb + 5 right)
   makeBinding('td', 'Fn', { ref: 'td_fn', tooltip: BEHAVIORS.td_fn.desc }),
