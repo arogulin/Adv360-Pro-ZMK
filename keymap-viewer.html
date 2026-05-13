@@ -78,14 +78,44 @@ h1 { text-align: center; margin-bottom: 10px; font-size: 1.4em; color: #aaaacc; 
 .tt-row span { color: #aaa; }
 .tt-detail { margin-top: 4px; padding-top: 4px; border-top: 1px solid #444; color: #999; font-size: 11px; }
 .key:hover rect { filter: brightness(1.3); }
+.print-link {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 6px 14px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #2a2a4a;
+  color: #aaa;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.print-link:hover { background: #3a3a5a; color: #ddd; }
+#print-container { display: none; }
+@media print {
+  body { background: #ffffff; color: #000000; padding: 8px; }
+  h1 { color: #000000; }
+  .tabs, .hint, .tooltip, .print-link, #svg-container, .legend { display: none !important; }
+  #print-container { display: block; }
+  .print-layer { page-break-inside: avoid; margin: 0 0 18px; }
+  .print-layer h2 { color: #000000; font-size: 14px; text-align: center; margin: 6px 0; font-weight: 600; }
+  .print-layer svg { width: 100%; height: auto; max-width: 100%; display: block; margin: 0 auto; }
+  .print-legend {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+    padding: 8px 0; font-size: 10px; color: #222; border-top: 1px solid #999;
+  }
+  .print-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+  .print-legend-swatch { width: 12px; height: 12px; border-width: 1px; border-style: solid; display: inline-block; }
+}
 </style>
 </head>
 <body>
 <h1>Kinesis Advantage 360 Pro — Keymap</h1>
 <div class="tabs" id="tabs"></div>
-<div class="hint">Press 1–4 to switch layers</div>
+<div class="hint">Press 1–4 to switch layers <a href="#" class="print-link" id="print-link">Print keymap</a></div>
 <div class="svg-container" id="svg-container"></div>
 <div class="legend" id="legend"></div>
+<div id="print-container"></div>
 <div class="tooltip" id="tooltip"></div>
 
 <script>
@@ -467,6 +497,7 @@ const GAP = 4;
 const RADIUS = 6;
 
 let currentLayer = 0;
+let isPrintRender = false;
 
 function getKeyRect(layout) {
   const w = (layout.w || 1) * UNIT - GAP;
@@ -558,19 +589,26 @@ function renderKey(binding, layout, keyIdx) {
   const centerX = rect.x + rect.w / 2;
   const centerY = rect.y + rect.h / 2;
 
+  const subSize = isPrintRender ? 9 : 8;
+  const subOpacity = isPrintRender ? 1 : 0.7;
+  const subWeight = isPrintRender ? 'bold' : 'normal';
+
   if (binding.type === 'ht') {
     // Hold-tap: main label (tap) centered slightly above, hold below
-    svg += `<text x="${centerX}" y="${centerY - 4}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="${fontSize}px" font-family="sans-serif">${escapeHtml(binding.tap || label)}</text>`;
-    svg += `<text x="${centerX}" y="${centerY + 12}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="8px" font-family="sans-serif" opacity="0.7">hold: ${escapeHtml(binding.hold || '')}</text>`;
+    svg += `<text x="${centerX}" y="${centerY - 4}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="${fontSize}px" font-family="sans-serif" font-weight="bold">${escapeHtml(binding.tap || label)}</text>`;
+    svg += `<text x="${centerX}" y="${centerY + 12}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="${subSize}px" font-family="sans-serif" font-weight="${subWeight}" opacity="${subOpacity}">hold: ${escapeHtml(binding.hold || '')}</text>`;
   } else if (label) {
-    svg += `<text x="${centerX}" y="${centerY}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="${fontSize}px" font-family="sans-serif">${escapeHtml(label)}</text>`;
+    svg += `<text x="${centerX}" y="${centerY}" text-anchor="middle" dominant-baseline="central" fill="${textColor}" font-size="${fontSize}px" font-family="sans-serif" font-weight="bold">${escapeHtml(label)}</text>`;
   }
 
   // Badge
   if (badge) {
     const bx = rect.x + rect.w - 14;
     const by = rect.y + 10;
-    svg += `<text x="${bx}" y="${by}" text-anchor="middle" fill="${colors.text}" font-size="7px" font-family="sans-serif" opacity="0.6">${badge}</text>`;
+    const badgeSize = isPrintRender ? 9 : 7;
+    const badgeOpacity = isPrintRender ? 1 : 0.6;
+    const badgeWeight = isPrintRender ? 'bold' : 'normal';
+    svg += `<text x="${bx}" y="${by}" text-anchor="middle" fill="${colors.text}" font-size="${badgeSize}px" font-family="sans-serif" font-weight="${badgeWeight}" opacity="${badgeOpacity}">${badge}</text>`;
   }
 
   svg += '</g>';
@@ -691,6 +729,56 @@ document.addEventListener('keydown', (e) => {
   const n = parseInt(e.key);
   if (n >= 1 && n <= 4) setLayer(n - 1);
 });
+
+// === Print support ===
+const PRINT_COLORS = {
+  kp:        { bg: '#ffffff', border: '#333333', text: '#000000' },
+  mod:       { bg: '#bcd8f7', border: '#16538f', text: '#08213f' },
+  layer:     { bg: '#e6c4ec', border: '#6a2a7c', text: '#2e0e38' },
+  td:        { bg: '#f8c98a', border: '#9a5510', text: '#3f2300' },
+  ht:        { bg: '#bee4b3', border: '#2d7a2d', text: '#0f330f' },
+  sk:        { bg: '#a8dcdc', border: '#1f6868', text: '#0a2929' },
+  media:     { bg: '#edbeed', border: '#7a2a7a', text: '#2c062c' },
+  trans:     { bg: '#fafafa', border: '#888888', text: '#777777' },
+  none:      { bg: '#ffffff', border: '#bbbbbb', text: '#aaaaaa' },
+  sys:       { bg: '#f8b9b9', border: '#8e1818', text: '#3d0606' },
+  bt:        { bg: '#b8d6e8', border: '#16526e', text: '#082233' },
+  backlight: { bg: '#ecdf8a', border: '#6e600e', text: '#2e2700' }
+};
+
+const COLORS_BACKUP = {};
+Object.keys(COLORS).forEach(k => { COLORS_BACKUP[k] = Object.assign({}, COLORS[k]); });
+
+function buildPrintView() {
+  const savedLayer = currentLayer;
+  Object.keys(PRINT_COLORS).forEach(k => { Object.assign(COLORS[k], PRINT_COLORS[k]); });
+  isPrintRender = true;
+
+  let html = '';
+  LAYERS.forEach((layer, i) => {
+    html += `<div class="print-layer"><h2>${escapeHtml(layer.name)} layer</h2>${renderLayer(i)}</div>`;
+  });
+
+  html += '<div class="print-legend">';
+  Object.keys(COLORS).forEach(type => {
+    const dash = type === 'trans' ? 'border-style:dashed;' : '';
+    html += `<span class="print-legend-item"><span class="print-legend-swatch" style="background:${COLORS[type].bg};border-color:${COLORS[type].border};${dash}"></span>${TYPE_LABELS[type]}</span>`;
+  });
+  html += '</div>';
+
+  document.getElementById('print-container').innerHTML = html;
+
+  Object.keys(COLORS_BACKUP).forEach(k => { Object.assign(COLORS[k], COLORS_BACKUP[k]); });
+  isPrintRender = false;
+  currentLayer = savedLayer;
+}
+
+document.getElementById('print-link').addEventListener('click', (e) => {
+  e.preventDefault();
+  buildPrintView();
+  window.print();
+});
+window.addEventListener('beforeprint', buildPrintView);
 
 // === Initial render ===
 setLayer(0);
