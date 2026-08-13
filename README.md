@@ -147,7 +147,13 @@ By default this config repository references [a customised version of ZMK](https
 Whilst the Advantage 360 Pro is compatible with base ZMK (The pull request to merge it can be seen [here](https://github.com/zmkfirmware/zmk/pull/1454) if you want to see how to implement it) some of the more advanced features (the indicator RGB leds) will not work, and Kinesis cannot provide customer service for usage of base ZMK. Likewise the ZMK community cannot provide support for either the Kinesis keymap editor, nor any usage of the Kinesis custom fork.
 
 ## Syncing with upstream
-1. Add upstream as a remote:
+
+Merge upstream into your fork rather than rebasing onto it. This fork's own commits
+(the keymap, the keymap viewer, the manual-only build workflow) are already published,
+so a rebase would rewrite them and require a force push on every sync. A merge keeps
+them intact and only resolves the changes that actually overlap.
+
+1. Add upstream as a remote, once per clone:
    ```shell
    git remote add upstream https://github.com/KinesisCorporation/Adv360-Pro-ZMK.git
    ```
@@ -155,16 +161,27 @@ Whilst the Advantage 360 Pro is compatible with base ZMK (The pull request to me
    ```shell
    git fetch upstream
    ```
-3. Make sure you're on a branch you want to update. Rebase your fork on upstream:
+3. See what is actually new before merging anything:
    ```shell
-   git rebase upstream/V3.0
+   git log --oneline upstream/V3.0 ^V3.0
    ```
-4. If you have any merge conflicts, resolve them and then run `git rebase --continue` to
-   continue the rebase.
-5. Push your changes to your fork:
+4. Check out the branch you want to update and merge:
    ```shell
-   git push -f origin
+   git checkout V3.0
+   git merge upstream/V3.0
    ```
+5. If there are conflicts, resolve them, `git add` the files, then `git commit`. Conflicts
+   are usually confined to the files this fork has customised: `config/adv360.keymap`,
+   `keymap-viewer.html`, and `.github/workflows/build.yml`. When resolving `build.yml`,
+   keep the `on: workflow_dispatch` trigger so firmware builds stay manual.
+6. Push normally, without `--force`:
+   ```shell
+   git push origin V3.0
+   ```
+
+To preview whether a merge will conflict without touching the working tree, run
+`git merge-tree --write-tree --name-only V3.0 upstream/V3.0`. A clean merge prints just a
+tree hash and exits `0`; otherwise it lists the conflicting paths and exits non-zero.
 
 ## Other support
 
