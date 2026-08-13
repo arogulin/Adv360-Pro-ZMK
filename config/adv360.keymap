@@ -62,7 +62,7 @@
         &kp TAB   &kp Q     &kp W       &kp E    &kp R      &kp T  &td_cwl                                                                          &none     &kp Y  &kp U  &kp I     &kp O    &kp P    &kp BSLH
         &kp ESC   &kp A     &kp S       &kp D    &kp F      &kp G  &kp GRAVE    &kp LGUI         &kp LALT  &kp RALT              &kp RGUI           &td_pp    &kp H  &kp J  &kp K     &kp L    &kp SEMI &kp SQT
         &kp LSHFT &kp Z     &kp X       &kp C    &kp V      &kp B                                &kp LG(V) &kp LC(LA(LS(LG(R))))                                          &kp N  &kp M  &kp COMMA &kp DOT  &kp FSLH &kp RSHFT
-        &td_fn    &kp GRAVE &kp GRAVE   &kp LEFT &kp RIGHT         &kp BSPC     &ht_hp LCTRL DEL &kp LG(C) &skq LC(LA(LS(LGUI))) &ht_hp RCTRL ENTER &kp SPACE        &kp UP &kp DOWN  &kp LBKT &kp RBKT &td_fn
+        &td_fn    &kp GRAVE &kp GRAVE   &kp LEFT &kp RIGHT         &kp BSPC     &ht_hp LCTRL DEL &ht_hp LC(LA(LS(LGUI))) LG(C) &skq LC(LA(LS(LGUI))) &ht_hp RCTRL ENTER &kp SPACE        &kp UP &kp DOWN  &kp LBKT &kp RBKT &td_fn
       >;
     };
     keypad {
